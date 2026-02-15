@@ -1,6 +1,7 @@
 name: Exploring var and Sec
 on: 
     workflow_dispatch:
+    push:
       
 env:
   CONTAINER_REGISTRY: docker.io
@@ -16,6 +17,7 @@ jobs:
     - name: Docker Publish
       run: echo docker push $CONTAINER_REGISTRY/${{ vars.DOCKER_USERNAME }}/$IMAGE_NAME:latest
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: docker
     runs-on: ubuntu-latest
     concurrency: 
@@ -26,4 +28,4 @@ jobs:
       timeout-minutes: 1
       run: |
        echo docker run -d -p 8080:80 $CONTAINER_REGISTRY/${{ vars.DOCKER_USERNAME }}/$IMAGE_NAME:latest
-       sleep 600s
+       sleep 500s
